@@ -10,7 +10,7 @@ export const DEMO_DOCUMENT_NAME = "HK_IT_Blueprint.pdf";
 export const DEMO_QA: DemoQA[] = [
     {
         question: "What are the 4 broad development directions in the HK I&T Blueprint?",
-        keywords: ["4 direction", "four direction", "development direction", "broad direction", "4個"],
+        keywords: ["4 direction", "four direction", "development direction", "broad direction"],
         answer: `The Hong Kong Innovation & Technology Blueprint outlines **4 broad development directions**:
 
 1. **New Industrialisation** — Advancing Hong Kong's re-industrialisation through smart manufacturing, attracting high-value-added industries (e.g., microelectronics, life & health technology), and strengthening the industrial ecosystem.
@@ -39,7 +39,7 @@ InnoHK embodies Hong Kong's strategy to become a **globally recognised centre fo
     },
     {
         question: "How does the blueprint address talent development?",
-        keywords: ["talent", "human capital", "education", "training", "workforce", "人才"],
+        keywords: ["talent", "human capital", "education", "training", "workforce"],
         answer: `The Blueprint places **I&T talent development** as a top priority through multiple strategies:
 
 - **STEM Education**: Strengthening STEM at primary and secondary levels, expanding coding education, and developing computational thinking.
@@ -53,8 +53,8 @@ The goal is to create a **deep and diverse pipeline of local I&T talent** while 
     },
     {
         question: "What is the Hetao Shenzhen-Hong Kong Science and Technology Innovation Co-operation Zone?",
-        keywords: ["hetao", "shenzhen", "co-operation zone", "innovation zone", "cross-border", "河套"],
-        answer: `The **Hetao Shenzhen-Hong Kong Science and Technology Innovation Co-operation Zone** (河套深港科技創新合作區) is a major cross-boundary innovation hub straddling both sides of the Shenzhen River:
+        keywords: ["hetao", "shenzhen", "co-operation zone", "innovation zone", "cross-border"],
+        answer: `The **Hetao Shenzhen-Hong Kong Science and Technology Innovation Co-operation Zone** is a major cross-boundary innovation hub straddling both sides of the Shenzhen River:
 
 - **Hong Kong Park** (Lok Ma Chau Loop): Focuses on life & health technology, AI, data science, and new materials research.
 - **Shenzhen Park**: Provides complementary industrial manufacturing and scaling capabilities.
