@@ -1,32 +1,33 @@
-# Universal RAG Assistant (BYOK Edition) 🤖
+# Universal BYOK RAG Assistant 🤖
 
-A modern, professional, and fully customizable RAG (Retrieval-Augmented Generation) web application. Designed for portfolios, this project emphasizes **privacy**, **flexibility**, and **seamless deployment**.
+A high-performance, session-based **Retrieval-Augmented Generation (RAG)** engine designed to demonstrate scalable AI orchestration and document intelligence. This system allows users to interact with any private dataset using their own AI infrastructure.
 
-## 🌟 Core Philosophy
-Unlike traditional RAG demos, this application uses a **BYOK (Bring Your Own Key)** model:
-- **Unlimited Content**: Users can upload any PDF, DOCX, or TXT files for analysis—it is not limited to a single dataset.
-- **User-Provided API**: Connects directly to the user's OpenAI or Google Gemini API, ensuring zero operational costs for the developer.
-- **Stateless Privacy**: All vector data and conversation history are stored only in the current session (In-Memory). Once the browser tab is closed, all data is wiped, adhering to the highest privacy standards.
+## 🏗️ Technical Architecture
 
-## ✨ Key Features
-1. **Multi-Model Support**: Seamlessly compatible with OpenAI (GPT-4o) and Google Gemini (1.5 / 2.0 / 2.5 / 3 Flash).
-2. **Modern Professional UI**: Sleek Slate & Blue color palette with Glassmorphism visual style and smooth micro-animations.
-3. **Smart Document Parsing**: Robust text extraction for complex PDF, DOCX, and TXT files.
-4. **Demo Mode**: Built-in "Hong Kong I&T Blueprint" dataset allows visitors to experience the RAG workflow instantly without an API Key.
-5. **One-Click Deployment**: Fully optimized for Vercel Serverless environments with no database configuration required.
+### 1. Bring Your Own Key (BYOK) Integration
+Optimized for the modern "API-as-a-Service" landscape, the system orchestrates directly with the user's provided **OpenAI** or **Google Generative AI** keys. This ensures:
+- **Zero-Latency Orchestration**: Direct client-to-model communication where applicable.
+- **Resource Efficiency**: Eliminates server-side LLM hosting overhead while providing a professional interface.
 
-## 🚀 Quick Start
-1. Fork or upload this repository to GitHub.
-2. Link the repository to your Vercel account.
-3. Ensure the **Root Directory** is set to the project root.
-4. Click **Deploy** and you're ready to go!
+### 2. Stateless In-Memory Vector Engine
+A custom-built retrieval layer implemented for high-speed, privacy-first document analysis:
+- **Cosine Similarity Search**: Leveraging custom vector arithmetic to rank relevant document chunks.
+- **Session-Scoped Persistence**: Data is ingested into memory and cleared upon session termination, ensuring zero data footprint on the server.
+- **Recursive Character Chunking**: Implementation of overlapping window splitting for maintaining semantic context across documents.
+
+## 🚀 Key Technical Features
+
+- **Standardized Multi-Model Support**: Advanced support for **GPT-4o** and **Gemini 2.5/3 Flash**, including robust handling of different API versioning (v1/v1beta).
+- **Universal Document Intelligence**: Modular parser supporting **PDF**, **DOCX**, and **TXT** files through asynchronous ingestion pipelines.
+- **Intelligent Conversation Memory**: Context-aware buffering that manages token windows for sustained, multi-turn RAG dialogues.
+- **Synthetic Demo Layer**: An integrated simulation mode that demonstrates the full RAG pipeline (Retrieval -> Context Injection -> LLM Inference) using a pre-indexed knowledge base.
 
 ## 🛠️ Tech Stack
-- **Frontend**: Next.js 16 (App Router)
-- **RAG Framework**: LangChain.js
-- **LLM**: OpenAI / Google Generative AI
-- **Vector Store**: Custom In-Memory Vector Store (Cosine Similarity)
-- **Styling**: Pure CSS3 (Professional Dark Theme)
+- **Framework**: Next.js (App Router)
+- **AI Orchestration**: LangChain.js
+- **Foundational Models**: OpenAI & Google Generative AI
+- **Parsing**: mammoth (DOCX), pdf-parse (PDF)
+- **Vector Operations**: Custom In-Memory Implementation
 
 ---
-Built for high-performance, privacy-first AI applications.
+*Focused on engineering excellence in document intelligence and privacy-preserving AI.*
