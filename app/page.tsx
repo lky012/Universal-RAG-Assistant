@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { DEMO_SUGGESTED_QUESTIONS, DEMO_DOCUMENT_NAME } from "@/lib/demoData";
+import { parseFileOnClient } from "@/lib/clientParser";
 
 type Message = {
   role: "user" | "ai";
@@ -41,21 +42,31 @@ export default function RAGPage() {
       return;
     }
 
-    setIsUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("apiKey", apiKey);
-    formData.append("provider", provider);
-    if (sessionId) formData.append("sessionId", sessionId);
+    if (file.size > 20 * 1024 * 1024) {
+      alert("File is too large. Maximum size is 20MB.");
+      return;
+    }
 
+    setIsUploading(true);
     try {
+      // 1. Parse file on client to extract text
+      const extractedText = await parseFileOnClient(file);
+      if (!extractedText.trim()) throw new Error("Could not extract text from file.");
+
+      // 2. Upload only the extracted text
+      const formData = new FormData();
+      formData.append("text", extractedText);
+      formData.append("filename", file.name);
+      formData.append("apiKey", apiKey);
+      formData.append("provider", provider);
+      if (sessionId) formData.append("sessionId", sessionId);
+
       const res = await fetch("/api/upload", { method: "POST", body: formData });
 
       let data;
       try {
         data = await res.json();
       } catch (jsonErr) {
-        if (res.status === 413) throw new Error("File too large for Vercel (max 4.5MB)");
         throw new Error(`Server error: ${res.statusText}`);
       }
 
@@ -64,6 +75,7 @@ export default function RAGPage() {
       setSessionId(data.sessionId);
       setUploadedFiles(data.totalFiles);
     } catch (err: any) {
+      console.error("Client parse error:", err);
       alert(err.message);
     } finally {
       setIsUploading(false);
@@ -203,7 +215,7 @@ export default function RAGPage() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             </div>
             <div className="drop-title">Upload Documents</div>
-            <div className="drop-subtitle">PDF, DOCX, TXT (Max 4MB)</div>
+            <div className="drop-subtitle">PDF, DOCX, TXT (Max 20MB)</div>
             <input
               type="file"
               accept=".pdf,.docx,.txt,.md"

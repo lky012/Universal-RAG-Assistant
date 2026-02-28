@@ -5,41 +5,17 @@ import { ingestDocuments, addDocumentsToStore } from "@/lib/ragEngine";
 
 export const maxDuration = 60;
 
-async function extractText(buffer: Buffer, filename: string): Promise<string> {
-    if (filename.toLowerCase().endsWith(".pdf")) {
-        const pdf = await import("pdf-parse");
-        // Handle pdf-parse v2 class-based API
-        const PDFClass = (pdf as any).PDFParse || (pdf as any).default?.PDFParse || pdf;
-        const parser = new PDFClass({ data: new Uint8Array(buffer) });
-        const result = await parser.getText();
-        return result.text;
-    }
-    if (filename.toLowerCase().endsWith(".docx")) {
-        const mammoth = await import("mammoth");
-        const result = await mammoth.extractRawText({ buffer });
-        return result.value;
-    }
-    return buffer.toString("utf-8");
-}
-
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();
-        const file = formData.get("file") as File | null;
+        const text = formData.get("text") as string;
+        const filename = formData.get("filename") as string;
         const apiKey = formData.get("apiKey") as string;
         const provider = (formData.get("provider") as AIProvider) || "openai";
         let sessionId = formData.get("sessionId") as string;
 
-        if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
+        if (!text) return NextResponse.json({ error: "No text content provided" }, { status: 400 });
         if (!apiKey) return NextResponse.json({ error: "No API key provided" }, { status: 400 });
-        if (file.size > 4 * 1024 * 1024)
-            return NextResponse.json({ error: "File too large (max 4MB mid-session)" }, { status: 413 });
-
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const text = await extractText(buffer, file.name);
-
-        if (!text.trim())
-            return NextResponse.json({ error: "Could not extract text from file" }, { status: 422 });
 
         let session = sessionId ? getSession(sessionId) : null;
         if (!session) {
@@ -51,15 +27,15 @@ export async function POST(req: NextRequest) {
 
         if (session.vectorStore) {
             const result = await addDocumentsToStore(
-                session.vectorStore, text, file.name, provider, apiKey
+                session.vectorStore, text, filename, provider, apiKey
             );
             chunkCount = result.chunkCount;
-            updateSession(sessionId, { files: [...session.files, file.name] });
+            updateSession(sessionId, { files: [...session.files, filename] });
         } else {
-            const result = await ingestDocuments(text, file.name, provider, apiKey);
+            const result = await ingestDocuments(text, filename, provider, apiKey);
             updateSession(sessionId, {
                 vectorStore: result.store,
-                files: [file.name],
+                files: [filename],
                 provider,
                 apiKey,
             });
