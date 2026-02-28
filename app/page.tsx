@@ -50,8 +50,16 @@ export default function RAGPage() {
 
     try {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        if (res.status === 413) throw new Error("File too large for Vercel (max 4.5MB)");
+        throw new Error(`Server error: ${res.statusText}`);
+      }
+
+      if (!res.ok || data.error) throw new Error(data.error || "Upload failed");
 
       setSessionId(data.sessionId);
       setUploadedFiles(data.totalFiles);
@@ -83,12 +91,18 @@ export default function RAGPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: text, sessionId }),
       });
-      const data = await res.json();
 
-      if (data.error) {
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error(`Server connection error (${res.status})`);
+      }
+
+      if (!res.ok || data.error) {
         setMessages((prev) => [
           ...prev,
-          { role: "ai", content: data.error, isError: true },
+          { role: "ai", content: data?.error || "Request failed", isError: true },
         ]);
       } else {
         setMessages((prev) => [
@@ -189,7 +203,7 @@ export default function RAGPage() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             </div>
             <div className="drop-title">Upload Documents</div>
-            <div className="drop-subtitle">PDF, DOCX, TXT (Max 15MB)</div>
+            <div className="drop-subtitle">PDF, DOCX, TXT (Max 4MB)</div>
             <input
               type="file"
               accept=".pdf,.docx,.txt,.md"

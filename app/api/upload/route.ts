@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
 
         if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
         if (!apiKey) return NextResponse.json({ error: "No API key provided" }, { status: 400 });
-        if (file.size > 15 * 1024 * 1024)
-            return NextResponse.json({ error: "File too large (max 15MB)" }, { status: 413 });
+        if (file.size > 4 * 1024 * 1024)
+            return NextResponse.json({ error: "File too large (max 4MB mid-session)" }, { status: 413 });
 
         const buffer = Buffer.from(await file.arrayBuffer());
         const text = await extractText(buffer, file.name);
